@@ -1,4 +1,12 @@
+import { Users, Briefcase, Building2, Search, ExternalLink } from "lucide-react";
 import { buildQuickSearchLinks, type QuickSearchParams } from "@/lib/quickSearchLinks";
+
+const ICONS: Record<string, typeof Users> = {
+  LinkedIn: Users,
+  Indeed: Briefcase,
+  Glassdoor: Building2,
+  "Google Jobs": Search,
+};
 
 export function QuickSearchLinks(params: QuickSearchParams) {
   const links = buildQuickSearchLinks(params);
@@ -9,17 +17,22 @@ export function QuickSearchLinks(params: QuickSearchParams) {
         Cari langsung di situs lowongan
       </h2>
       <div className="flex flex-wrap gap-2">
-        {links.map((link) => (
-          <a
-            key={link.label}
-            href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-md border border-[var(--border-hairline)] bg-[var(--surface-1)] px-3 py-2 text-sm font-medium text-[var(--text-primary)] hover:bg-black/5"
-          >
-            Cari di {link.label} ↗
-          </a>
-        ))}
+        {links.map((link) => {
+          const Icon = ICONS[link.label] ?? Search;
+          return (
+            <a
+              key={link.label}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-secondary"
+            >
+              <Icon size={15} />
+              {link.label}
+              <ExternalLink size={12} className="text-[var(--text-muted)]" />
+            </a>
+          );
+        })}
       </div>
     </div>
   );

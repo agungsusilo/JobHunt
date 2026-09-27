@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Search, Loader2, SearchX } from "lucide-react";
 import { QuickSearchLinks } from "./QuickSearchLinks";
 import { JobResultCard } from "./JobResultCard";
 import type { JobSearchResult } from "@/lib/jobSearch";
@@ -40,30 +41,33 @@ export function SurfClient() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-6">
       <header className="mb-6">
-        <h1 className="text-xl font-semibold text-[var(--text-primary)]">
+        <h1 className="text-2xl font-semibold tracking-tight text-[var(--text-primary)]">
           Surf the Internet
         </h1>
-        <p className="mt-1 text-sm text-[var(--text-secondary)]">
+        <p className="mt-1 text-sm text-[var(--text-muted)]">
           Cari lowongan berdasarkan kata kunci. Hasil di bawah diagregasi
           dari API publik (Arbeitnow, RemoteOK); untuk cakupan lebih luas
           (termasuk LinkedIn/Indeed) pakai tombol pencarian cepat.
         </p>
       </header>
 
-      <form
-        onSubmit={handleSearch}
-        className="mb-6 flex flex-wrap items-end gap-3"
-      >
+      <form onSubmit={handleSearch} className="card mb-6 flex flex-wrap items-end gap-3 p-4">
         <label className="block">
           <span className="mb-1 block text-sm font-medium text-[var(--text-secondary)]">
             Kata kunci
           </span>
-          <input
-            className="input w-64"
-            placeholder="e.g. frontend engineer"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
+          <div className="relative">
+            <Search
+              size={15}
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]"
+            />
+            <input
+              className="input w-64 pl-9"
+              placeholder="e.g. frontend engineer"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
         </label>
         <label className="block">
           <span className="mb-1 block text-sm font-medium text-[var(--text-secondary)]">
@@ -81,14 +85,12 @@ export function SurfClient() {
             type="checkbox"
             checked={remoteOnly}
             onChange={(e) => setRemoteOnly(e.target.checked)}
+            className="h-4 w-4 accent-[var(--series-blue)]"
           />
           Remote only
         </label>
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-md bg-[var(--series-blue)] px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-        >
+        <button type="submit" disabled={loading} className="btn-primary disabled:opacity-50">
+          {loading ? <Loader2 size={15} className="animate-spin" /> : <Search size={15} />}
           {loading ? "Mencari..." : "Cari"}
         </button>
       </form>
@@ -111,10 +113,13 @@ export function SurfClient() {
           <JobResultCard key={result.id} result={result} />
         ))}
         {submitted && !loading && results.length === 0 && !error && (
-          <p className="text-sm text-[var(--text-muted)]">
-            Tidak ada hasil dari sumber yang kami agregasi. Coba tombol
-            pencarian cepat di atas untuk jangkauan lebih luas.
-          </p>
+          <div className="card flex flex-col items-center gap-2 p-10 text-center text-[var(--text-muted)]">
+            <SearchX size={24} />
+            <p className="text-sm">
+              Tidak ada hasil dari sumber yang kami agregasi. Coba tombol
+              pencarian cepat di atas untuk jangkauan lebih luas.
+            </p>
+          </div>
         )}
       </div>
     </div>

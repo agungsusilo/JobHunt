@@ -1,5 +1,6 @@
 "use client";
 
+import { Search } from "lucide-react";
 import { STATUS_OPTIONS, SOURCE_OPTIONS } from "@/lib/constants";
 import type { ApplicationSource, ApplicationStatus } from "@/lib/types";
 
@@ -17,12 +18,18 @@ interface FilterBarProps {
 export function FilterBar({ filters, onChange }: FilterBarProps) {
   return (
     <div className="mb-3 flex flex-wrap items-center gap-2">
-      <input
-        className="input max-w-xs"
-        placeholder="Search company or position..."
-        value={filters.search}
-        onChange={(e) => onChange({ ...filters, search: e.target.value })}
-      />
+      <div className="relative max-w-xs flex-1">
+        <Search
+          size={15}
+          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]"
+        />
+        <input
+          className="input pl-9"
+          placeholder="Search company or position..."
+          value={filters.search}
+          onChange={(e) => onChange({ ...filters, search: e.target.value })}
+        />
+      </div>
       <select
         className="input w-auto"
         value={filters.status}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Trash2, Loader2 } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
 import { STATUS_OPTIONS, SOURCE_OPTIONS } from "@/lib/constants";
 import type { Application, ApplicationInput } from "@/lib/types";
@@ -229,25 +230,19 @@ export function ApplicationFormModal({
                     onClose();
                   }
                 }}
-                className="text-sm text-[var(--status-critical)] hover:underline"
+                className="flex items-center gap-1.5 text-sm text-[var(--status-critical)] hover:underline"
               >
+                <Trash2 size={14} />
                 Delete
               </button>
             )}
           </div>
           <div className="flex gap-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-md border border-[var(--border-hairline)] px-4 py-2 text-sm"
-            >
+            <button type="button" onClick={onClose} className="btn-secondary">
               Cancel
             </button>
-            <button
-              type="submit"
-              disabled={saving}
-              className="rounded-md bg-[var(--series-blue)] px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-            >
+            <button type="submit" disabled={saving} className="btn-primary disabled:opacity-50">
+              {saving && <Loader2 size={14} className="animate-spin" />}
               {saving ? "Saving..." : "Save"}
             </button>
           </div>

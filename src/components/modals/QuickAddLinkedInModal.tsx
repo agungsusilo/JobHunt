@@ -61,16 +61,13 @@ export function QuickAddLinkedInModal({
           autoFocus
         />
         <div className="flex justify-end gap-2">
-          <button
-            onClick={handleClose}
-            className="rounded-md border border-[var(--border-hairline)] px-4 py-2 text-sm"
-          >
+          <button onClick={handleClose} className="btn-secondary">
             Cancel
           </button>
           <button
             onClick={handleParse}
             disabled={!raw.trim()}
-            className="rounded-md bg-[var(--series-blue)] px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+            className="btn-primary disabled:opacity-50"
           >
             Continue
           </button>

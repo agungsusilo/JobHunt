@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Loader2, Link2 } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
 import { ApplicationFormModal } from "@/components/modals/ApplicationFormModal";
 import { bulkUpsertApplications } from "@/lib/applications";
@@ -89,26 +90,30 @@ export function PasteLinkModal({ open, onClose, onSaved }: PasteLinkModalProps) 
           untuk LinkedIn biasanya perlu dilengkapi manual karena mereka
           membatasi akses tanpa login.
         </p>
-        <input
-          className="input"
-          placeholder="https://..."
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          autoFocus
-        />
+        <div className="relative">
+          <Link2
+            size={15}
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]"
+          />
+          <input
+            className="input pl-9"
+            placeholder="https://..."
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            autoFocus
+          />
+        </div>
         {error && <p className="text-sm text-[var(--status-critical)]">{error}</p>}
         <div className="flex justify-end gap-2">
-          <button
-            onClick={handleClose}
-            className="rounded-md border border-[var(--border-hairline)] px-4 py-2 text-sm"
-          >
+          <button onClick={handleClose} className="btn-secondary">
             Cancel
           </button>
           <button
             onClick={handleContinue}
             disabled={!url.trim() || loading}
-            className="rounded-md bg-[var(--series-blue)] px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+            className="btn-primary disabled:opacity-50"
           >
+            {loading && <Loader2 size={14} className="animate-spin" />}
             {loading ? "Mengambil detail..." : "Continue"}
           </button>
         </div>

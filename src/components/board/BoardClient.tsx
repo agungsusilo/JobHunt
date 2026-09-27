@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { Link2, Users, Upload, Plus } from "lucide-react";
 import { useApplications } from "@/hooks/useApplications";
+import { LoadingState } from "@/components/ui/LoadingState";
 import {
   createApplication,
   deleteApplication,
@@ -59,32 +61,29 @@ export function BoardClient() {
   return (
     <div className="mx-auto max-w-6xl px-4 py-6">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-semibold text-[var(--text-primary)]">
-          Job Board
-        </h1>
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-[var(--text-primary)]">
+            Job Board
+          </h1>
+          <p className="mt-1 text-sm text-[var(--text-muted)]">
+            Lacak setiap lamaran dari saved sampai offer.
+          </p>
+        </div>
         <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={() => setPasteLinkOpen(true)}
-            className="rounded-md border border-[var(--border-hairline)] px-3 py-2 text-sm"
-          >
+          <button onClick={() => setPasteLinkOpen(true)} className="btn-secondary">
+            <Link2 size={15} />
             Paste job link
           </button>
-          <button
-            onClick={() => setQuickAddOpen(true)}
-            className="rounded-md border border-[var(--border-hairline)] px-3 py-2 text-sm"
-          >
-            Quick add from LinkedIn
+          <button onClick={() => setQuickAddOpen(true)} className="btn-secondary">
+            <Users size={15} />
+            Quick add
           </button>
-          <button
-            onClick={() => setCsvOpen(true)}
-            className="rounded-md border border-[var(--border-hairline)] px-3 py-2 text-sm"
-          >
+          <button onClick={() => setCsvOpen(true)} className="btn-secondary">
+            <Upload size={15} />
             Import CSV
           </button>
-          <button
-            onClick={openNew}
-            className="rounded-md bg-[var(--series-blue)] px-3 py-2 text-sm font-medium text-white"
-          >
+          <button onClick={openNew} className="btn-primary">
+            <Plus size={15} />
             Add application
           </button>
         </div>
@@ -94,7 +93,7 @@ export function BoardClient() {
         <ViewToggle value={view} onChange={setView} />
       </div>
 
-      {loading && <p className="text-sm text-[var(--text-muted)]">Loading…</p>}
+      {loading && <LoadingState />}
       {error && <p className="text-sm text-[var(--status-critical)]">{error}</p>}
 
       {!loading && !error && view === "kanban" && (

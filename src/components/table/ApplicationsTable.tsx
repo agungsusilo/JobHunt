@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Inbox } from "lucide-react";
 import { FilterBar, type Filters } from "./FilterBar";
 import { StatusDropdown } from "./StatusDropdown";
 import { SOURCE_LABELS } from "@/lib/constants";
@@ -41,16 +42,16 @@ export function ApplicationsTable({
   return (
     <div>
       <FilterBar filters={filters} onChange={setFilters} />
-      <div className="overflow-x-auto rounded-lg border border-[var(--border-hairline)]">
+      <div className="card overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-[var(--border-hairline)] text-left text-xs text-[var(--text-muted)]">
-              <th className="px-3 py-2 font-medium">Company</th>
-              <th className="px-3 py-2 font-medium">Position</th>
-              <th className="px-3 py-2 font-medium">Location</th>
-              <th className="px-3 py-2 font-medium">Source</th>
-              <th className="px-3 py-2 font-medium">Applied</th>
-              <th className="px-3 py-2 font-medium">Status</th>
+              <th className="px-4 py-3 font-medium">Company</th>
+              <th className="px-4 py-3 font-medium">Position</th>
+              <th className="px-4 py-3 font-medium">Location</th>
+              <th className="px-4 py-3 font-medium">Source</th>
+              <th className="px-4 py-3 font-medium">Applied</th>
+              <th className="px-4 py-3 font-medium">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -58,24 +59,24 @@ export function ApplicationsTable({
               <tr
                 key={app.id}
                 onClick={() => onRowClick(app)}
-                className="cursor-pointer border-b border-[var(--border-hairline)] last:border-0 hover:bg-black/5"
+                className="cursor-pointer border-b border-[var(--border-hairline)] last:border-0 hover:bg-[var(--series-blue-soft)]"
               >
-                <td className="px-3 py-2 font-medium text-[var(--text-primary)]">
+                <td className="px-4 py-3 font-medium text-[var(--text-primary)]">
                   {app.company}
                 </td>
-                <td className="px-3 py-2 text-[var(--text-secondary)]">
+                <td className="px-4 py-3 text-[var(--text-secondary)]">
                   {app.position}
                 </td>
-                <td className="px-3 py-2 text-[var(--text-muted)]">
+                <td className="px-4 py-3 text-[var(--text-muted)]">
                   {app.location ?? "—"}
                 </td>
-                <td className="px-3 py-2 text-[var(--text-muted)]">
+                <td className="px-4 py-3 text-[var(--text-muted)]">
                   {SOURCE_LABELS[app.source]}
                 </td>
-                <td className="px-3 py-2 text-[var(--text-muted)]">
+                <td className="px-4 py-3 text-[var(--text-muted)]">
                   {app.applied_date ?? "—"}
                 </td>
-                <td className="px-3 py-2">
+                <td className="px-4 py-3">
                   <StatusDropdown
                     value={app.status}
                     onChange={(status) => onStatusChange(app.id, status)}
@@ -85,11 +86,13 @@ export function ApplicationsTable({
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td
-                  colSpan={6}
-                  className="px-3 py-8 text-center text-[var(--text-muted)]"
-                >
-                  No applications match these filters.
+                <td colSpan={6} className="px-4 py-12 text-center">
+                  <div className="flex flex-col items-center gap-2 text-[var(--text-muted)]">
+                    <Inbox size={24} />
+                    <span className="text-sm">
+                      No applications match these filters.
+                    </span>
+                  </div>
                 </td>
               </tr>
             )}

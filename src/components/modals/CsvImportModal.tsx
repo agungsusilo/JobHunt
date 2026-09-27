@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { FileUp, CheckCircle2 } from "lucide-react";
 import { Modal } from "@/components/ui/Modal";
 import {
   MAPPABLE_FIELDS,
@@ -98,15 +99,21 @@ export function CsvImportModal({
             &gt; Get a copy of your data &mdash; Saved Jobs / Jobs Applied) or
             any CSV with company/position columns.
           </p>
-          <input
-            type="file"
-            accept=".csv,text/csv"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) handleFile(file);
-            }}
-            className="block w-full text-sm"
-          />
+          <label className="flex cursor-pointer flex-col items-center gap-2 rounded-xl border-2 border-dashed border-[var(--border-hairline)] px-4 py-8 text-center transition-colors hover:border-[var(--series-blue)] hover:bg-[var(--series-blue-soft)]">
+            <FileUp size={22} className="text-[var(--text-muted)]" />
+            <span className="text-sm font-medium text-[var(--text-primary)]">
+              Klik untuk pilih file CSV
+            </span>
+            <input
+              type="file"
+              accept=".csv,text/csv"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleFile(file);
+              }}
+              className="hidden"
+            />
+          </label>
           {error && <p className="text-sm text-[var(--status-critical)]">{error}</p>}
         </div>
       )}
@@ -153,16 +160,13 @@ export function CsvImportModal({
           {error && <p className="text-sm text-[var(--status-critical)]">{error}</p>}
 
           <div className="flex justify-end gap-2 pt-2">
-            <button
-              onClick={() => setStep("upload")}
-              className="rounded-md border border-[var(--border-hairline)] px-4 py-2 text-sm"
-            >
+            <button onClick={() => setStep("upload")} className="btn-secondary">
               Back
             </button>
             <button
               onClick={handleCommit}
               disabled={importing}
-              className="rounded-md bg-[var(--series-blue)] px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+              className="btn-primary disabled:opacity-50"
             >
               {importing ? "Importing..." : "Import"}
             </button>
@@ -172,19 +176,22 @@ export function CsvImportModal({
 
       {step === "done" && summary && (
         <div className="space-y-4">
-          <p className="text-sm text-[var(--text-primary)]">
-            Imported {summary.imported} row
-            {summary.imported === 1 ? "" : "s"}.
-            {summary.skipped > 0 &&
-              ` Skipped ${summary.skipped} row${summary.skipped === 1 ? "" : "s"} missing company/position.`}
-          </p>
+          <div className="flex items-start gap-3 rounded-xl bg-[var(--series-blue-soft)] p-4">
+            <CheckCircle2 size={20} className="mt-0.5 shrink-0 text-[var(--status-good)]" />
+            <p className="text-sm text-[var(--text-primary)]">
+              Imported {summary.imported} row
+              {summary.imported === 1 ? "" : "s"}.
+              {summary.skipped > 0 &&
+                ` Skipped ${summary.skipped} row${summary.skipped === 1 ? "" : "s"} missing company/position.`}
+            </p>
+          </div>
           <div className="flex justify-end">
             <button
               onClick={() => {
                 reset();
                 onClose();
               }}
-              className="rounded-md bg-[var(--series-blue)] px-4 py-2 text-sm font-medium text-white"
+              className="btn-primary"
             >
               Done
             </button>
