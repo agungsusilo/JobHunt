@@ -3,19 +3,18 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { useApplications } from "@/hooks/useApplications";
-import { computeStats } from "@/lib/stats";
 import {
   createApplication,
   deleteApplication,
   updateApplication,
   updateApplicationStatus,
 } from "@/lib/applications";
-import { StatsOverview } from "./StatsOverview";
-import { ViewToggle, type ViewMode } from "./ViewToggle";
+import { ViewToggle, type ViewMode } from "@/components/dashboard/ViewToggle";
 import { ApplicationsTable } from "@/components/table/ApplicationsTable";
 import { ApplicationFormModal } from "@/components/modals/ApplicationFormModal";
 import { CsvImportModal } from "@/components/modals/CsvImportModal";
 import { QuickAddLinkedInModal } from "@/components/modals/QuickAddLinkedInModal";
+import { PasteLinkModal } from "@/components/modals/PasteLinkModal";
 import type { Application, ApplicationInput, ApplicationStatus } from "@/lib/types";
 
 const KanbanBoard = dynamic(
@@ -23,7 +22,7 @@ const KanbanBoard = dynamic(
   { ssr: false },
 );
 
-export function DashboardClient() {
+export function BoardClient() {
   const { applications, loading, error } = useApplications();
   const [view, setView] = useState<ViewMode>("kanban");
   const [editing, setEditing] = useState<Application | null>(null);
@@ -31,8 +30,7 @@ export function DashboardClient() {
   const [formKey, setFormKey] = useState(0);
   const [csvOpen, setCsvOpen] = useState(false);
   const [quickAddOpen, setQuickAddOpen] = useState(false);
-
-  const stats = computeStats(applications);
+  const [pasteLinkOpen, setPasteLinkOpen] = useState(false);
 
   function openNew() {
     setEditing(null);
@@ -62,9 +60,15 @@ export function DashboardClient() {
     <div className="mx-auto max-w-6xl px-4 py-6">
       <header className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-xl font-semibold text-[var(--text-primary)]">
-          JobHunt
+          Job Board
         </h1>
         <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={() => setPasteLinkOpen(true)}
+            className="rounded-md border border-[var(--border-hairline)] px-3 py-2 text-sm"
+          >
+            Paste job link
+          </button>
           <button
             onClick={() => setQuickAddOpen(true)}
             className="rounded-md border border-[var(--border-hairline)] px-3 py-2 text-sm"
@@ -86,18 +90,12 @@ export function DashboardClient() {
         </div>
       </header>
 
-      <StatsOverview stats={stats} />
-
       <div className="mb-4">
         <ViewToggle value={view} onChange={setView} />
       </div>
 
-      {loading && (
-        <p className="text-sm text-[var(--text-muted)]">Loading…</p>
-      )}
-      {error && (
-        <p className="text-sm text-[var(--status-critical)]">{error}</p>
-      )}
+      {loading && <p className="text-sm text-[var(--text-muted)]">Loading…</p>}
+      {error && <p className="text-sm text-[var(--status-critical)]">{error}</p>}
 
       {!loading && !error && view === "kanban" && (
         <KanbanBoard
@@ -121,9 +119,7 @@ export function DashboardClient() {
         onClose={() => setFormOpen(false)}
         initial={editing}
         onSubmit={handleSubmit}
-        onDelete={
-          editing ? () => deleteApplication(editing.id) : undefined
-        }
+        onDelete={editing ? () => deleteApplication(editing.id) : undefined}
       />
 
       <CsvImportModal
@@ -136,6 +132,12 @@ export function DashboardClient() {
         open={quickAddOpen}
         onClose={() => setQuickAddOpen(false)}
         onSaved={() => setQuickAddOpen(false)}
+      />
+
+      <PasteLinkModal
+        open={pasteLinkOpen}
+        onClose={() => setPasteLinkOpen(false)}
+        onSaved={() => setPasteLinkOpen(false)}
       />
     </div>
   );
