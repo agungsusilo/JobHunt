@@ -1,9 +1,16 @@
 # JobHunt
 
-Personal job-application tracker. Single-user, no login — a Kanban + table
-view backed by Supabase, with a few ways to get jobs (including LinkedIn
-listings) into it without a live LinkedIn API integration (LinkedIn doesn't
-offer one for personal saved/applied jobs).
+Personal job-application tracker. Single-user, no login — backed by
+Supabase, with three pages in the sidebar:
+
+- **Dashboard** — KPI tiles + a per-status breakdown of your pipeline.
+- **Surf the Internet** — search job listings aggregated from free public
+  APIs (Arbeitnow, RemoteOK), plus quick-search links to LinkedIn, Indeed,
+  Glassdoor and Google Jobs (those don't offer public search APIs, so those
+  cards just open a pre-filled search in a new tab).
+- **Job Board** — the Kanban/table tracker, with a few ways to get jobs
+  (including LinkedIn listings) into it without a live LinkedIn API
+  integration (LinkedIn doesn't offer one for personal saved/applied jobs).
 
 ## Setup
 
@@ -20,14 +27,18 @@ offer one for personal saved/applied jobs).
    ```
    Open http://localhost:3000.
 
-## Using the dashboard
+## Using Job Board
 
-- **Kanban / Table toggle** at the top switches views. Drag a card between
-  columns, or use the status dropdown in the table, to move an application
-  through the pipeline (wishlist → applied → phone screen → interview →
+- **Kanban / Table toggle** switches views. Drag a card between columns, or
+  use the status dropdown in the table, to move an application through the
+  pipeline (wishlist → applied → phone screen → interview →
   offer/rejected/withdrawn).
 - **Add application** opens a blank form. Click any card/row to edit or
   delete it.
+- **Paste job link** — paste a job posting URL and it'll try to fetch the
+  title/company from the page's meta tags (works for most job boards and
+  company career pages). LinkedIn usually blocks this, so it'll fall back to
+  an empty form you fill in manually — always review before saving.
 - **Import CSV** accepts LinkedIn's official data export (Settings & Privacy
   → Data privacy → Get a copy of your data → Saved Jobs / Jobs Applied) or
   any CSV with company/position columns. Column names are fuzzy-matched;
@@ -35,6 +46,25 @@ offer one for personal saved/applied jobs).
 - **Quick add from LinkedIn** — paste the copied text of a job posting page
   and it'll try to pre-fill company/position/location/URL. Always review the
   pre-filled form before saving since the extraction is best-effort.
+
+## Using Surf the Internet
+
+Type a keyword (and optionally a location / remote-only filter) and hit
+Cari. Results are aggregated server-side from two free public job APIs:
+
+- **Arbeitnow** and **RemoteOK** — both require attribution/backlink per
+  their API terms, which is why each result card links back to its source.
+  Remotive was deliberately left out: its API terms prohibit displaying its
+  listings in a third-party UI without a paid plan.
+
+Since none of the big boards (LinkedIn, Indeed, Glassdoor, Google Jobs)
+offer a public search API, the "quick search" cards instead just open a
+pre-filled search for your keyword/location on that site in a new tab —
+this app never scrapes those sites directly.
+
+Any result can be saved straight to Job Board with **+ Simpan ke Job
+Board** (upserts on the job URL, so saving the same listing twice won't
+create a duplicate).
 
 ## Bulk import via script
 
