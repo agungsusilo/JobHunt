@@ -1,0 +1,27 @@
+{
+  "default_source": "linkedin",
+  "jobs": [
+    {
+      "company": "Acme Corp",
+      "position": "Senior Frontend Engineer",
+      "job_url": "https://www.linkedin.com/jobs/view/1111111111",
+      "location": "Remote",
+      "status": "wishlist",
+      "notes": "Saved from LinkedIn sample import."
+    },
+    {
+      "company": "Globex",
+      "position": "Backend Engineer",
+      "job_url": "https://www.linkedin.com/jobs/view/2222222222",
+      "location": "Jakarta, Indonesia",
+      "status": "applied",
+      "applied_date": "2026-09-20"
+    },
+    {
+      "company": "Initech",
+      "position": "Product Designer",
+      "location": "Bandung, Indonesia",
+      "status": "wishlist"
+    }
+  ]
+}

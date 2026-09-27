@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# JobHunt
 
-## Getting Started
+Personal job-application tracker. Single-user, no login — a Kanban + table
+view backed by Supabase, with a few ways to get jobs (including LinkedIn
+listings) into it without a live LinkedIn API integration (LinkedIn doesn't
+offer one for personal saved/applied jobs).
 
-First, run the development server:
+## Setup
+
+1. **Supabase schema**: open your Supabase project's SQL Editor and run
+   [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql).
+   It's idempotent, so re-running it is safe.
+2. **Environment**: copy `.env.local.example` to `.env.local` and fill in
+   your project's URL, anon key, and service role key (Project Settings →
+   API in the Supabase dashboard).
+3. Install and run:
+   ```bash
+   npm install
+   npm run dev
+   ```
+   Open http://localhost:3000.
+
+## Using the dashboard
+
+- **Kanban / Table toggle** at the top switches views. Drag a card between
+  columns, or use the status dropdown in the table, to move an application
+  through the pipeline (wishlist → applied → phone screen → interview →
+  offer/rejected/withdrawn).
+- **Add application** opens a blank form. Click any card/row to edit or
+  delete it.
+- **Import CSV** accepts LinkedIn's official data export (Settings & Privacy
+  → Data privacy → Get a copy of your data → Saved Jobs / Jobs Applied) or
+  any CSV with company/position columns. Column names are fuzzy-matched;
+  you'll always get a chance to confirm/fix the mapping before importing.
+- **Quick add from LinkedIn** — paste the copied text of a job posting page
+  and it'll try to pre-fill company/position/location/URL. Always review the
+  pre-filled form before saving since the extraction is best-effort.
+
+## Bulk import via script
+
+`scripts/import-jobs.mjs` bulk-upserts jobs from a JSON file directly into
+Supabase (using the service role key, so it bypasses RLS — never run this
+against an untrusted file). This is the intended hook for a *separate* Claude
+session that has browser access (e.g. Claude Desktop with Claude in Chrome or
+the built-in browser) to read your LinkedIn saved/applied jobs pages and feed
+them in here, since this build environment has no browser tool available.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run import:jobs -- path/to/jobs.json
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+JSON shape (either form works):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```json
+{ "default_source": "linkedin", "jobs": [ { "company": "...", "position": "..." } ] }
+```
+or a bare array `[ { "company": "...", "position": "..." } ]`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Only `company` and `position` are required; every other field mirrors the
+`applications` table's columns (snake_case). Rows are upserted on `job_url`,
+so re-running the script with overlapping data updates existing rows instead
+of duplicating them. Try it with the included fixture:
 
-## Learn More
+```bash
+npm run import:jobs -- scripts/sample-jobs.json
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Security note
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Row Level Security is enabled with a permissive `USING (true)` policy for
+`anon`/`authenticated` — correct for this single-user local tool, but **do
+not deploy this publicly** without adding real authentication first, since
+anyone with the anon key could read/write all rows.

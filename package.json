@@ -1,21 +1,26 @@
 {
-  "name": "jobhunt-scaffold",
+  "name": "jobhunt",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "import:jobs": "node --env-file=.env.local scripts/import-jobs.mjs"
   },
   "dependencies": {
+    "@hello-pangea/dnd": "^18.0.1",
+    "@supabase/supabase-js": "^2.117.2",
     "next": "16.3.6",
+    "papaparse": "^5.7.0",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/papaparse": "^5.5.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
