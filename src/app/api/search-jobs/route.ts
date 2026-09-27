@@ -7,6 +7,10 @@ export async function GET(request: Request) {
   const location = searchParams.get("location") ?? "";
   const remoteOnly = searchParams.get("remote") === "true";
 
-  const results = await aggregateJobSearch({ query, location, remoteOnly });
-  return NextResponse.json({ results });
+  const { results, totalAvailable } = await aggregateJobSearch({
+    query,
+    location,
+    remoteOnly,
+  });
+  return NextResponse.json({ results, totalAvailable });
 }

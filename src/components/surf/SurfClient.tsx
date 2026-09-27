@@ -16,6 +16,7 @@ export function SurfClient() {
     remoteOnly: boolean;
   } | null>(null);
   const [results, setResults] = useState<JobSearchResult[]>([]);
+  const [totalAvailable, setTotalAvailable] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,6 +32,7 @@ export function SurfClient() {
       if (!res.ok) throw new Error("Gagal mengambil hasil pencarian.");
       const data = await res.json();
       setResults(data.results);
+      setTotalAvailable(data.totalAvailable ?? 0);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Gagal mencari.");
     } finally {
@@ -99,12 +101,13 @@ export function SurfClient() {
 
       {error && <p className="text-sm text-[var(--status-critical)]">{error}</p>}
 
-      {submitted && !loading && !error && (
+      {submitted && !loading && !error && results.length > 0 && (
         <p className="mb-3 text-sm text-[var(--text-muted)]">
           {results.length} hasil untuk &quot;{submitted.query || "semua lowongan"}
           &quot;
           {submitted.location && ` di ${submitted.location}`}
           {submitted.remoteOnly && " (remote only)"}
+          <span> &middot; dari {totalAvailable} lowongan yang kami index</span>
         </p>
       )}
 
@@ -113,12 +116,26 @@ export function SurfClient() {
           <JobResultCard key={result.id} result={result} />
         ))}
         {submitted && !loading && results.length === 0 && !error && (
-          <div className="card flex flex-col items-center gap-2 p-10 text-center text-[var(--text-muted)]">
-            <SearchX size={24} />
-            <p className="text-sm">
-              Tidak ada hasil dari sumber yang kami agregasi. Coba tombol
-              pencarian cepat di atas untuk jangkauan lebih luas.
-            </p>
+          <div className="card flex flex-col items-center gap-3 p-10 text-center">
+            <SearchX size={24} className="text-[var(--text-muted)]" />
+            <div className="max-w-md space-y-1.5">
+              <p className="text-sm font-medium text-[var(--text-primary)]">
+                Tidak ada lowongan yang cocok untuk &quot;{submitted.query}&quot;
+              </p>
+              <p className="text-xs text-[var(--text-muted)]">
+                Ini bukan error — dua sumber gratis yang kami agregasi
+                (Arbeitnow + RemoteOK) saat ini cuma berisi sekitar{" "}
+                {totalAvailable} lowongan aktif, kebanyakan software
+                engineering umum & berbasis Eropa/remote. Untuk kata kunci
+                spesifik (mis. peran QA/testing, atau lokasi Indonesia),
+                kemungkinan besar tidak ada listing yang cocok di sana.
+              </p>
+              <p className="text-xs text-[var(--text-muted)]">
+                Klik salah satu tombol pencarian cepat di atas untuk hasil
+                dari LinkedIn, Indeed, Glassdoor, atau Google Jobs — cakupan
+                jauh lebih luas.
+              </p>
+            </div>
           </div>
         )}
       </div>

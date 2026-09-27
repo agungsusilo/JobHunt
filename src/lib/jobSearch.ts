@@ -109,11 +109,16 @@ function matchesLocation(job: JobSearchResult, location: string): boolean {
   return (job.location ?? "").toLowerCase().includes(location.toLowerCase());
 }
 
+export interface JobSearchResponse {
+  results: JobSearchResult[];
+  totalAvailable: number;
+}
+
 export async function aggregateJobSearch({
   query,
   location,
   remoteOnly,
-}: JobSearchParams): Promise<JobSearchResult[]> {
+}: JobSearchParams): Promise<JobSearchResponse> {
   const [arbeitnow, remoteOk] = await Promise.all([
     fetchArbeitnow(),
     fetchRemoteOk(),
@@ -135,5 +140,5 @@ export async function aggregateJobSearch({
 
   filtered.sort((a, b) => (b.publishedAt ?? 0) - (a.publishedAt ?? 0));
 
-  return filtered.slice(0, 30);
+  return { results: filtered.slice(0, 30), totalAvailable: combined.length };
 }
