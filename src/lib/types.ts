@@ -40,3 +40,24 @@ export type ApplicationDraft = Omit<
 
 export type ApplicationInput = Partial<ApplicationDraft> &
   Pick<ApplicationDraft, "company" | "position">;
+
+export interface Profile {
+  id: string;
+  full_name: string | null;
+  email: string | null;
+  phone: string | null;
+  location: string | null;
+  headline: string | null;
+  linkedin_url: string | null;
+  portfolio_url: string | null;
+  summary: string | null;
+  cv_path: string | null;
+  cv_filename: string | null;
+  cv_uploaded_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type ProfileInput = Partial<
+  Omit<Profile, "id" | "created_at" | "updated_at">
+>;

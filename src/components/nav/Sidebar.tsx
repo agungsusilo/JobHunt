@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Globe, KanbanSquare, Briefcase } from "lucide-react";
+import { LayoutDashboard, Globe, KanbanSquare, Briefcase, User } from "lucide-react";
 
 const LINKS = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/surf", label: "Surf the Internet", icon: Globe },
   { href: "/board", label: "Job Board", icon: KanbanSquare },
+  { href: "/profile", label: "Profile", icon: User },
 ];
 
 export function Sidebar() {

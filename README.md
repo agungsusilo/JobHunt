@@ -1,7 +1,7 @@
 # JobHunt
 
 Personal job-application tracker. Single-user, no login — backed by
-Supabase, with three pages in the sidebar:
+Supabase, with four pages in the sidebar:
 
 - **Dashboard** — KPI tiles + a per-status breakdown of your pipeline.
 - **Surf the Internet** — search job listings aggregated from free public
@@ -11,12 +11,15 @@ Supabase, with three pages in the sidebar:
 - **Job Board** — the Kanban/table tracker, with a few ways to get jobs
   (including LinkedIn listings) into it without a live LinkedIn API
   integration (LinkedIn doesn't offer one for personal saved/applied jobs).
+- **Profile** — your contact info and a single current CV/resume file.
 
 ## Setup
 
 1. **Supabase schema**: open your Supabase project's SQL Editor and run
-   [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql).
-   It's idempotent, so re-running it is safe.
+   [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql)
+   then [`0002_profile.sql`](supabase/migrations/0002_profile.sql) (creates
+   the `profile` table and a public `cv-uploads` storage bucket). Both are
+   idempotent, so re-running them is safe.
 2. **Environment**: copy `.env.local.example` to `.env.local` and fill in
    your project's URL, anon key, and service role key (Project Settings →
    API in the Supabase dashboard).
@@ -66,6 +69,13 @@ Any result can be saved straight to Job Board with **+ Simpan ke Job
 Board** (upserts on the job URL, so saving the same listing twice won't
 create a duplicate).
 
+## Using Profile
+
+Fill in your contact info and click Simpan. Upload a CV (PDF/DOC/DOCX, max
+10MB) via the dropzone at the top — it's stored in Supabase Storage
+(`cv-uploads` bucket, public). Uploading a new file automatically replaces
+and deletes the previous one; there's only ever one current CV.
+
 ## Bulk import via script
 
 `scripts/import-jobs.mjs` bulk-upserts jobs from a JSON file directly into
@@ -100,4 +110,7 @@ npm run import:jobs -- scripts/sample-jobs.json
 Row Level Security is enabled with a permissive `USING (true)` policy for
 `anon`/`authenticated` — correct for this single-user local tool, but **do
 not deploy this publicly** without adding real authentication first, since
-anyone with the anon key could read/write all rows.
+anyone with the anon key could read/write all rows. The `cv-uploads` storage
+bucket is public for the same reason: anyone with the file path (a random
+timestamp-prefixed name) could view your CV — fine for local use, not for a
+public deployment.
